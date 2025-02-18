@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+import uuid
 
 
 class TimeStampedModel(models.Model):
@@ -21,3 +22,20 @@ class TimeStampedModel(models.Model):
             update_fields.add('updated_at')
 
         super().save(force_insert, force_update, using, update_fields)
+
+
+class OutboxEvent(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event_type = models.CharField(max_length=255)
+    event_date_time = models.DateTimeField()
+    environment = models.CharField(max_length=50)
+    event_context = models.JSONField()
+    metadata_version = models.PositiveBigIntegerField()
+
+    processed = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=["processed", "created_at"]),
+        ]
