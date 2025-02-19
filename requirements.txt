@@ -11,3 +11,4 @@ ruff==0.7.1
 clickhouse-connect==0.8.5
 clickhouse-driver
 django-celery-beat
+prometheus-client

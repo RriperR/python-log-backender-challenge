@@ -55,8 +55,11 @@ class CreateUser(UseCase):
         logger.error('unable to create a new user')
         return CreateUserResponse(error='User with this email already exists')
 
+
     def _log(self, user: User) -> None:
-        OutboxEvent.objects.create(
+        logger.info("TRYING TO CREATE OutboxEvent", email=user.email)
+
+        event = OutboxEvent.objects.create(
             event_type="user_signup",
             event_date_time=now(),
             environment="production",
@@ -67,5 +70,8 @@ class CreateUser(UseCase):
             },
             metadata_version=1,
         )
+
+        logger.info("OutboxEvent CREATED", id=event.id, email=user.email)
+
 
 

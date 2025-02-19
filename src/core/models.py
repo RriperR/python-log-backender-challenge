@@ -26,6 +26,7 @@ class TimeStampedModel(models.Model):
 
 class OutboxEvent(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    idempotency_key = models.UUIDField(default=uuid.uuid4, unique=True)  # Защита от дубликатов
     event_type = models.CharField(max_length=255)
     event_date_time = models.DateTimeField()
     environment = models.CharField(max_length=50)
